@@ -62,4 +62,53 @@ export const toolTemplates = [
       },
     },
   },
+  {
+    name: "book_appointment",
+    type: "function",
+    description: "Book an appointment in the calendar",
+    parameters: {
+      type: "object",
+      properties: {
+        service: {
+          type: "string",
+          enum: ["consultation", "follow_up", "general_appointment"],
+          description: "Type of service requested"
+        },
+        datetime: {
+          type: "string",
+          format: "date-time",
+          description: "Requested date and time for the appointment (ISO 8601 format)"
+        },
+        duration: {
+          type: "integer",
+          enum: [30, 60],
+          description: "Duration of appointment in minutes"
+        },
+        customer: {
+          type: "object",
+          properties: {
+            name: { 
+              type: "string",
+              description: "Full name of the customer"
+            },
+            email: { 
+              type: "string",
+              format: "email",
+              description: "Email address for confirmation"
+            },
+            phone: { 
+              type: "string",
+              description: "Contact phone number"
+            }
+          },
+          required: ["name", "email"]
+        },
+        notes: {
+          type: "string",
+          description: "Any additional notes or special requests"
+        }
+      },
+      required: ["service", "datetime", "duration", "customer"]
+    }
+  }
 ];
