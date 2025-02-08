@@ -3,7 +3,6 @@ import { WebSocket } from "ws";
 export interface Session {
   twilioConn?: WebSocket;
   frontendConn?: WebSocket;
-  modelConn?: WebSocket;
   config?: any;
   streamSid?: string;
 }
@@ -14,14 +13,23 @@ export interface FunctionCallItem {
   call_id?: string;
 }
 
+export interface JSONSchemaProperty {
+  type: string;
+  description?: string;
+  enum?: any[];
+  format?: string;
+  properties?: Record<string, JSONSchemaProperty>;
+  required?: string[];
+}
+
 export interface FunctionSchema {
   name: string;
   type: "function";
   description?: string;
   parameters: {
     type: string;
-    properties: Record<string, { type: string; description?: string }>;
-    required: string[];
+    properties: Record<string, JSONSchemaProperty>;
+    required?: string[];
   };
 }
 

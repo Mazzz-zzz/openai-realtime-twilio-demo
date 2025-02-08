@@ -16,12 +16,6 @@ dotenv.config();
 
 const PORT = parseInt(process.env.PORT || "8081", 10);
 const PUBLIC_URL = process.env.PUBLIC_URL || "";
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
-
-if (!OPENAI_API_KEY) {
-  console.error("OPENAI_API_KEY environment variable is required");
-  process.exit(1);
-}
 
 const app = express();
 app.use(cors());
@@ -38,11 +32,8 @@ app.get("/public-url", (req, res) => {
 });
 
 app.all("/twiml", (req, res) => {
-  const wsUrl = new URL(PUBLIC_URL);
-  wsUrl.protocol = "wss:";
-  wsUrl.pathname = `/call`;
-
-  const twimlContent = twimlTemplate.replace("{{WS_URL}}", wsUrl.toString());
+  const wsUrl = "https://api.vapi.ai/twilio/inbound_call";
+  const twimlContent = twimlTemplate.replace("{{WS_URL}}", wsUrl);
   res.type("text/xml").send(twimlContent);
 });
 
@@ -68,7 +59,7 @@ wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
   if (type === "call") {
     if (currentCall) currentCall.close();
     currentCall = ws;
-    handleCallConnection(currentCall, OPENAI_API_KEY);
+    handleCallConnection(currentCall);
   } else if (type === "logs") {
     if (currentLogs) currentLogs.close();
     currentLogs = ws;
